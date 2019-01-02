@@ -86,6 +86,7 @@ while true
     
     % Update map
     map(current) = 3;         % mark current node as visited
+    dist = distanceFromStart(current
     distanceFromStart(current) = Inf; % remove this node from further consideration
     
     % Compute row, column coordinates of current node
@@ -99,8 +100,15 @@ while true
     
     toVisit = getneighbours(map, current);
     
-    
-    
+    for ii = toVisit
+        [i, j] = ind2sub(size(distanceFromStart), ii);
+        dist = abs(dest_coords(1)-i) + abs(dest_coords(2)-j);
+        if (dist < distanceFromStart(ii))
+            parent(ii) = current;
+            distanceFromStart(ii) = dist;
+            map(ii) = 4;
+        end
+    end
     %*********************************************************************
 
 end
@@ -140,7 +148,8 @@ function toVisit = getneighbours(map, curr)
         for ii = 1:size(neighbours,1)
             if(neighbours(ii,1) >= mapMin & neighbours(ii,1) <= mapMax &... % inside map?
                     neighbours(ii,2) >= mapMin & neighbours(ii,2) <= mapMax &... % inside map?
-                    map(neighbours(ii,1), neighbours(ii,2)) == 1 ... % clear cell
+                    (map(neighbours(ii,1), neighbours(ii,2)) == 1 |... % clear cell
+                    map(neighbours(ii,1), neighbours(ii,2)) == 6)... % dest
                     )
                 visit = sub2ind(size(map),neighbours(ii,1),neighbours(ii,2));                    cont = 1;
                 toVisit = [toVisit,visit];
