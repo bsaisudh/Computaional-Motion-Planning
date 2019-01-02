@@ -97,6 +97,7 @@ while true
     % Visit each neighbor of the current node and update the map, distances
     % and parent tables appropriately.
     
+    toVisit = getneighbours(map, current);
     
     
     
@@ -124,4 +125,27 @@ else
     end
 end
 
+end
+function toVisit = getneighbours(map, curr)
+    toVisit = [];
+    mapMin = 1;
+    mapMax = size(map,1);
+    for current = curr
+        [i, j] = ind2sub(size(map), current);
+        neighbours = [  i-1 j   ;...
+                        i+1 j   ;...
+                        i   j+1 ;...
+                        i   j-1  ...
+                        ];
+        for ii = 1:size(neighbours,1)
+            if(neighbours(ii,1) >= mapMin & neighbours(ii,1) <= mapMax &... % inside map?
+                    neighbours(ii,2) >= mapMin & neighbours(ii,2) <= mapMax &... % inside map?
+                    map(neighbours(ii,1), neighbours(ii,2)) == 1 ... % clear cell
+                    )
+                visit = sub2ind(size(map),neighbours(ii,1),neighbours(ii,2));                    cont = 1;
+                toVisit = [toVisit,visit];
+            end
+        end
+    end
+    toVisit = unique(toVisit);
 end

@@ -1,5 +1,5 @@
 function [route,numExpanded] = GrassFire (input_map, start_coords, dest_coords)
-% Run Dijkstra's algorithm on a grid.
+% Run Grassfire algorithm on a grid.
 % Inputs : 
 %   input_map : a logical array where the freespace cells are false or 0 and
 %   the obstacles are true or 1
@@ -65,6 +65,7 @@ numExpanded = 0;
 visited = [dest_node];
 dist = 0;
 distance = Inf(nrows,ncols);
+% imagecnt = 0;
 while true
     
     % Draw current map
@@ -78,6 +79,9 @@ while true
         grid on;
         axis image;
         drawnow;
+        % name = strcat('result/test_2_',num2str(imagecnt),'.png');
+        % saveas(image(1.5, 1.5, map), name);
+        % imagecnt = imagecnt + 1;
     end
     
     % Find the node with the minimum distance
@@ -151,6 +155,8 @@ end
         image(1.5, 1.5, map);
         grid on;
         axis image;
+        % name = strcat('result/test__',num2str(k),'.png');
+        % saveas(image(1.5, 1.5, map), name);
     end
 end
 
