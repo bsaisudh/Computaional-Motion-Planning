@@ -34,6 +34,7 @@ colormap(cmap);
 % variable to control if the map is being visualized on every
 % iteration
 drawMapEveryTime = true;
+saveMapEveryTime = false;
 
 [nrows, ncols] = size(input_map);
 
@@ -71,10 +72,14 @@ while true
     % make drawMapEveryTime = true if you want to see how the 
     % nodes are expanded on the grid. 
     if (drawMapEveryTime)
-        image(1.5, 1.5, map);
+        fig = image(1.5, 1.5, map);
         grid on;
         axis image;
         drawnow;
+        if (saveMapEveryTime)
+            name = strcat('result/map_1_' , num2str(numExpanded) , '.png');
+            saveas(fig,name);
+        end
     end
     
     % Find the node with the minimum distance
@@ -86,6 +91,7 @@ while true
     
     % Update map
     map(current) = 3;         % mark current node as visited
+    distCurrent = distanceFromStart(current);
     distanceFromStart(current) = Inf; % remove this node from further consideration
     
     % Compute row, column coordinates of current node
@@ -99,8 +105,16 @@ while true
     
     toVisit = getneighbours(map, current);
     
-    
-    
+    for ii = toVisit
+        [i, j] = ind2sub(size(distanceFromStart), ii);
+        dist = distCurrent + 1;
+        if (dist < distanceFromStart(ii))
+            parent(ii) = current;
+            distanceFromStart(ii) = dist;
+            map(ii) = 4;
+        end
+    end
+    numExpanded = numExpanded + 1;
     %*********************************************************************
 
 end
@@ -119,12 +133,15 @@ else
     for k = 2:length(route) - 1        
         map(route(k)) = 7;
         pause(0.1);
-        image(1.5, 1.5, map);
+        fig = image(1.5, 1.5, map);
         grid on;
         axis image;
+        if (saveMapEveryTime)
+            name = strcat('result/map_2_' , num2str(k) , '.png');
+            saveas(fig,name);
+        end
     end
 end
-
 end
 function toVisit = getneighbours(map, curr)
     toVisit = [];
@@ -140,7 +157,8 @@ function toVisit = getneighbours(map, curr)
         for ii = 1:size(neighbours,1)
             if(neighbours(ii,1) >= mapMin & neighbours(ii,1) <= mapMax &... % inside map?
                     neighbours(ii,2) >= mapMin & neighbours(ii,2) <= mapMax &... % inside map?
-                    map(neighbours(ii,1), neighbours(ii,2)) == 1 ... % clear cell
+                    (map(neighbours(ii,1), neighbours(ii,2)) == 1 |... % clear cell
+                    map(neighbours(ii,1), neighbours(ii,2)) == 6)... % dest
                     )
                 visit = sub2ind(size(map),neighbours(ii,1),neighbours(ii,2));                    cont = 1;
                 toVisit = [toVisit,visit];
