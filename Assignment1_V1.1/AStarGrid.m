@@ -33,7 +33,7 @@ colormap(cmap);
 % variable to control if the map is being visualized on every
 % iteration
 drawMapEveryTime = true;
-saveMapEveryTime = true;
+saveMapEveryTime = false;
 
 [nrows, ncols] = size(input_map);
 
